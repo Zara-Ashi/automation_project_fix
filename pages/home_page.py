@@ -18,3 +18,11 @@ class HomePage(BasePage):
         self.search_input.fill(keyword)
         self.search_button.click()
         self.page.wait_for_load_state("networkidle")
+
+    def open(self):
+        self.page.goto(self.URL)
+        self.page.wait_for_timeout(1000)
+
+    def click_cart_icon(self):
+        self.page.locator("a[href*='checkout/cart']").first.click()
+        self.page.wait_for_timeout(1000)

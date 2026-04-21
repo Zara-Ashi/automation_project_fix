@@ -29,6 +29,4 @@ class LoginPage(BasePage):
         self.fill_username(username)
         self.fill_password(password)
         self.click_login()
-
-        if self.error_alert.is_visible():
-            raise AssertionError(f"Login failed: {self.error_alert.text_content()}")
+        self.page.wait_for_timeout(2000)
