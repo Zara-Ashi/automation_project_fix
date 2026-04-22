@@ -1,8 +1,8 @@
 import pytest
 from playwright.sync_api import sync_playwright
+from utils.config import URLS
 
-from utils.config import BASE_URL
-
+VIEWPORT_MOBILE = {"width": 375, "height": 667}
 LOGIN = "autotester_user"
 PASSWORD = "Test1234!"
 
@@ -19,35 +19,34 @@ def browser_instance():
 def page(browser_instance):
     context = browser_instance.new_context()
     page = context.new_page()
-    page.goto(BASE_URL)
+    page.goto(URLS["main"])
     yield page
     context.close()
 
 
 @pytest.fixture
 def mobile_page(browser_instance):
-    context = browser_instance.new_context(viewport={"width": 375, "height": 667})
+    context = browser_instance.new_context(viewport=VIEWPORT_MOBILE)
     page = context.new_page()
-    page.goto(BASE_URL)
+    page.goto(URLS["main"])
     yield page
     context.close()
 
 
 @pytest.fixture
 def auth_page(browser_instance):
-    """Factory fixture. Returns a callable: auth_page() for default user,
-    auth_page(username="other", password="pass") for any other user."""
+    from pages.login_page import LoginPage
+
     contexts = []
 
     def _make_auth_page(username=LOGIN, password=PASSWORD):
-        from pages.login_page import LoginPage
         context = browser_instance.new_context()
         contexts.append(context)
-        p = context.new_page()
-        login_page = LoginPage(p)
-        login_page.open()
-        login_page.login(username, password)
-        return p
+
+        page = context.new_page()
+        LoginPage(page).login(username, password)
+
+        return page
 
     yield _make_auth_page
 

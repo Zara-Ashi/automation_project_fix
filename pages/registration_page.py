@@ -1,9 +1,12 @@
 from pages.base_page import BasePage
-from utils.config import BASE_URL
+from utils.config import URLS
+from playwright.sync_api import expect
+
+DEFAULT_PASSWORD = "Test1234!"
 
 
 class RegistrationPage(BasePage):
-    URL = f"{BASE_URL}/index.php?rt=account/create"
+    URL = URLS["registration"]
 
     def __init__(self, page):
         super().__init__(page)
@@ -22,18 +25,26 @@ class RegistrationPage(BasePage):
         self.agree_checkbox = page.locator("#AccountFrm_agree")
         self.submit_btn = page.locator("button[title='Continue']")
 
-    def fill_form(self, email, login, password="Test1234!"):
+    def open(self):
+        self.page.goto(self.URL)
+        expect(self.firstname).to_be_visible()
+
+    def fill_form(self, email, login, password=DEFAULT_PASSWORD):
         self.firstname.fill("Auto")
         self.lastname.fill("Tester")
         self.email.fill(email)
         self.telephone.fill("1234567890")
         self.address.fill("Test Address")
         self.city.fill("Test City")
-        self.country.select_option("United States")
+
+        self.country.select_option(label="United States")
+
         self.page.wait_for_function(
             "document.querySelectorAll('#AccountFrm_zone_id option').length > 1"
         )
+
         self.zone.select_option(label="California")
+
         self.postcode.fill("12345")
         self.loginname.fill(login)
         self.password.fill(password)
@@ -42,17 +53,15 @@ class RegistrationPage(BasePage):
 
     def submit(self):
         self.submit_btn.click()
-        self.page.wait_for_load_state("networkidle")
+        expect(self.page).to_have_url(lambda url: "success" in url or "account" in url)
 
-    def register(self, email, login, password="Test1234!"):
+    def register(self, email, login, password=DEFAULT_PASSWORD):
         self.open()
         self.fill_form(email, login, password)
         self.submit()
 
     def is_registered_successfully(self):
-        content = self.page.content().lower()
         return (
-            "your account has been created" in content
+            "your account has been created" in self.page.content().lower()
             or "account/success" in self.page.url
-            or "account" in self.page.url
         )

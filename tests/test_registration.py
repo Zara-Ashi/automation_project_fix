@@ -4,17 +4,18 @@ from pages.registration_page import RegistrationPage
 from utils.helpers import unique_email, unique_login
 
 
-def test_TC01_registration(page):
+def test_TC_AUTH_01_registration(page):
+    registration_page = RegistrationPage(page)
+
     email = unique_email()
     login = unique_login()
 
-    registration_page = RegistrationPage(page)
     registration_page.register(email, login)
 
-    assert registration_page.is_registered_successfully(), "Регистрация не была завершена успешно"
+    assert registration_page.is_registered_successfully()
 
 
-def test_TC02_login(page):
+def test_TC_AUTH_02_login(page):
     login_page = LoginPage(page)
     account_page = AccountPage(page)
 

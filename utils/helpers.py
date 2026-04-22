@@ -1,9 +1,11 @@
-import time
+from faker import Faker
+
+fake = Faker()
 
 
 def unique_email():
-    return f"testuser_{int(time.time())}@mail.com"
+    return fake.email()
 
 
 def unique_login():
-    return f"user_{int(time.time())}"
+    return fake.user_name()

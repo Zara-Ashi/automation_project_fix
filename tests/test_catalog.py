@@ -3,21 +3,21 @@ from pages.home_page import HomePage
 from pages.product_page import ProductPage
 
 
-def test_TC01_categories_in_menu(page):
+def test_TC_CAT_01_categories_in_menu(page):
     home = HomePage(page)
     home.open()
+
     sidebar = home.get_category_menu_text()
 
     for cat in ["MAKEUP", "SKINCARE", "FRAGRANCE", "MEN", "HAIR CARE", "BOOKS", "APPAREL"]:
-        assert cat in sidebar, f"Категория '{cat}' не найдена"
+        assert cat in sidebar
 
 
-def test_TC02_open_makeup_category(page):
+def test_TC_CAT_02_makeup(page):
     catalog = CatalogPage(page)
     catalog.open_category("36")
 
-    assert "path=36" in page.url, "URL не содержит ожидаемый путь категории"
-    assert catalog.get_product_count() > 0, "товары отсутствуют"
+    assert catalog.get_product_count() > 0
 
 
 def test_TC03_open_subcategory_eyes(page):

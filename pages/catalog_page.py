@@ -11,6 +11,12 @@ class CatalogPage(BasePage):
         self.breadcrumb = page.locator(".breadcrumb")
         self.product_img = page.locator(".thumbnail img")
 
+        self.add_to_cart_buttons = page.locator("a[title='Add to Cart']")
+        self.cart_badge = page.locator(".nav.topcart span.label-orange")
+        self.product_submit_button = page.locator("button[type='submit']")
+        self.product_cart_button = page.locator("a.productcart")
+        self.product_cart_with_id = page.locator("a.productcart[data-id]")
+
     def open_category(self, category_id):
         self.page.goto(f"https://automationteststore.com/index.php?rt=product/category&path={category_id}")
 
@@ -37,54 +43,49 @@ class CatalogPage(BasePage):
         return self.product_img.first.evaluate("el => el.naturalWidth")
 
     def add_first_product_to_cart(self):
-        badge = self.page.locator(".nav.topcart span.label-orange")
-        buttons = self.page.locator("a[title='Add to Cart']")
-
-        count = buttons.count()
+        count = self.add_to_cart_buttons.count()
         assert count > 0, "Нет кнопок Add to Cart"
 
         for i in range(count):
-            btn = buttons.nth(i)
+            btn = self.add_to_cart_buttons.nth(i)
 
-            try:
-                # 👇 прокрутка к элементу
-                btn.scroll_into_view_if_needed()
-
-                # 👇 ждём, пока станет кликабельной
-                expect(btn).to_be_visible(timeout=3000)
-
-                btn.click(timeout=3000)
-
-            except:
+            if btn.count() == 0:
                 continue
 
-            # редирект на подписку → пропускаем
+            if not btn.is_visible():
+                continue
+
+            btn.scroll_into_view_if_needed()
+
+            if not btn.is_enabled():
+                continue
+
+            btn.click()
+
             if "subscriber" in self.page.url:
                 self.page.go_back()
                 continue
 
-            # если попали в товар
             if "product_id" in self.page.url:
-                product_button = self.page.locator("button[type='submit']")
-                if product_button.count() > 0:
-                    product_button.click()
+                if self.product_submit_button.count() > 0 and self.product_submit_button.first.is_enabled():
+                    self.product_submit_button.first.click()
 
-            # проверяем корзину
-            try:
-                expect(badge).not_to_have_text("0", timeout=3000)
+            if self.cart_badge.count() > 0 and self.cart_badge.inner_text() != "0":
                 return
-            except:
-                self.page.go_back()
+
+            self.page.go_back()
 
         raise Exception("Не удалось добавить ни один товар")
 
     def add_product_to_cart(self, index):
         self.page.goto(f"{BASE_URL}/index.php?rt=product/category&path=36")
         self.page.wait_for_timeout(1000)
-        product_id = self.page.locator("a.productcart[data-id]").nth(index).get_attribute("data-id")
+
+        product_id = self.product_cart_with_id.nth(index).get_attribute("data-id")
+
         if product_id:
             self.page.evaluate(f"update_cart({product_id})")
             self.page.wait_for_timeout(2000)
         else:
-            self.page.locator("a.productcart").nth(index).click()
+            self.product_cart_button.nth(index).click()
             self.page.wait_for_timeout(2000)

@@ -10,6 +10,7 @@ class HomePage(BasePage):
         self.search_input = page.locator("#filter_keyword")
         self.search_button = page.locator(".button-in-search")
         self.category_menu = page.locator("#categorymenu")
+        self.page_body = page.locator("body")
 
     def get_category_menu_text(self):
         return self.category_menu.inner_text().upper()
@@ -19,10 +20,6 @@ class HomePage(BasePage):
         self.search_button.click()
         self.page.wait_for_load_state("networkidle")
 
-    def open(self):
+    def open(self, wait_time=1000):
         self.page.goto(self.URL)
-        self.page.wait_for_timeout(1000)
-
-    def click_cart_icon(self):
-        self.page.locator("a[href*='checkout/cart']").first.click()
-        self.page.wait_for_timeout(1000)
+        self.page.wait_for_timeout(wait_time)
