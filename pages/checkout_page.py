@@ -1,3 +1,4 @@
+import re
 from playwright.sync_api import expect
 from pages.base_page import BasePage
 
@@ -5,39 +6,59 @@ from pages.base_page import BasePage
 class CheckoutPage(BasePage):
     def __init__(self, page):
         super().__init__(page)
-        self.guest_radio = page.locator("input[value='guest']")
-        self.continue_btn = page.locator("button:has-text('Continue')")
-        self.confirm_order_btn = page.locator("button:has-text('Confirm Order')")
-        self.guest_firstname = page.locator("#guestFrm_firstname")
-        self.guest_lastname = page.locator("#guestFrm_lastname")
-        self.guest_email = page.locator("#guestFrm_email")
-        self.guest_address = page.locator("#guestFrm_address_1")
-        self.guest_city = page.locator("#guestFrm_city")
-        self.guest_country = page.locator("#guestFrm_country_id")
-        self.guest_postcode = page.locator("#guestFrm_postcode")
-        self.page_body = page.locator("body")
+
+        self.guest_option = page.locator("#guest")
+        self.returning_option = page.locator("#login")
+
+        self.first_name = page.locator("#first-name")
+        self.last_name = page.locator("#last-name")
+        self.email = page.locator("#email")
+        self.address = page.locator("#address")
+        self.city = page.locator("#city")
+        self.country = page.locator("#country")
+        self.postcode = page.locator("#postcode")
+
+        self.confirm_button = page.locator("#confirm")
+        self.error = page.locator(".error")
 
     def select_guest_checkout(self):
-        if self.guest_radio.is_visible():
-            self.guest_radio.check()
-            if self.continue_btn.is_enabled():
-                self.continue_btn.click()
+        self.guest_option.click()
 
-    def fill_guest_form(self, first_name, last_name, email, address, city, country, postcode):
-        if self.guest_firstname.is_visible():
-            self.guest_firstname.fill(first_name)
-            self.guest_lastname.fill(last_name)
-            self.guest_email.fill(email)
-            self.guest_address.fill(address)
-            self.guest_city.fill(city)
-            self.guest_country.select_option(label=country)
-            self.guest_postcode.fill(postcode)
-            if self.continue_btn.is_enabled():
-                self.continue_btn.click()
+    def fill_guest_form(self, first, last, email, address, city, country, postcode):
+        self.first_name.fill(first)
+        self.last_name.fill(last)
+        self.email.fill(email)
+        self.address.fill(address)
+        self.city.fill(city)
+        self.country.fill(country)
+        self.postcode.fill(postcode)
 
     def confirm_order(self):
-        if self.confirm_order_btn.is_visible() and self.confirm_order_btn.is_enabled():
-            self.confirm_order_btn.click()
+        self.confirm_button.click()
 
-    def should_show_checkout_confirmation(self):
-        expect(self.page_body).to_contain_text("Checkout")
+    def verify_checkout_confirmation(self):
+        expect(self.page).to_have_url(re.compile("success"))
+
+    def verify_guest_option(self):
+        expect(self.guest_option).to_be_visible()
+
+    def verify_returning_customer_option(self):
+        expect(self.returning_option).to_be_visible()
+
+    def verify_validation_errors(self):
+        expect(self.error).to_be_visible()
+
+    def verify_email_error(self):
+        expect(self.error).to_contain_text("email")
+
+    def verify_regions_updated(self):
+        expect(self.page.locator("#region")).to_be_visible()
+
+    def verify_not_empty(self):
+        expect(self.page.locator(".cart-item")).not_to_have_count(0)
+
+    def verify_success_url(self):
+        expect(self.page).to_have_url(re.compile("success"))
+
+    def verify_order_number(self):
+        expect(self.page.locator(".order-number")).to_be_visible()
