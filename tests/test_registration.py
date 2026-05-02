@@ -24,3 +24,6 @@ def test_TC_AUTH_02_login(page):
 
     account_page.should_be_opened()
     account_page.is_account_label_visible()
+
+
+

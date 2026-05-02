@@ -59,9 +59,3 @@ class RegistrationPage(BasePage):
         self.open()
         self.fill_form(email, login, password)
         self.submit()
-
-    def is_registered_successfully(self):
-        return (
-            "your account has been created" in self.page.content().lower()
-            or "account/success" in self.page.url
-        )

@@ -1,10 +1,6 @@
 import pytest
 from playwright.sync_api import sync_playwright
-from utils.config import URLS
-
-VIEWPORT_MOBILE = {"width": 375, "height": 667}
-LOGIN = "autotester_user"
-PASSWORD = "Test1234!"
+from utils.config import URLS, VIEWPORT_MOBILE, LOGIN, PASSWORD
 
 
 @pytest.fixture(scope="session")
@@ -52,3 +48,4 @@ def auth_page(browser_instance):
 
     for ctx in contexts:
         ctx.close()
+
