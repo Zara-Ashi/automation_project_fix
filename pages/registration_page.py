@@ -10,20 +10,20 @@ class RegistrationPage(BasePage):
 
     def __init__(self, page):
         super().__init__(page)
-        self.firstname = page.locator("#AccountFrm_firstname")
-        self.lastname = page.locator("#AccountFrm_lastname")
-        self.email = page.locator("#AccountFrm_email")
-        self.telephone = page.locator("#AccountFrm_telephone")
-        self.address = page.locator("#AccountFrm_address_1")
-        self.city = page.locator("#AccountFrm_city")
-        self.country = page.locator("#AccountFrm_country_id")
-        self.zone = page.locator("#AccountFrm_zone_id")
-        self.postcode = page.locator("#AccountFrm_postcode")
-        self.loginname = page.locator("#AccountFrm_loginname")
-        self.password = page.locator("#AccountFrm_password")
-        self.confirm = page.locator("#AccountFrm_confirm")
+        self.firstname      = page.locator("#AccountFrm_firstname")
+        self.lastname       = page.locator("#AccountFrm_lastname")
+        self.email          = page.locator("#AccountFrm_email")
+        self.telephone      = page.locator("#AccountFrm_telephone")
+        self.address        = page.locator("#AccountFrm_address_1")
+        self.city           = page.locator("#AccountFrm_city")
+        self.country        = page.locator("#AccountFrm_country_id")
+        self.zone           = page.locator("#AccountFrm_zone_id")
+        self.postcode       = page.locator("#AccountFrm_postcode")
+        self.loginname      = page.locator("#AccountFrm_loginname")
+        self.password       = page.locator("#AccountFrm_password")
+        self.confirm        = page.locator("#AccountFrm_confirm")
         self.agree_checkbox = page.locator("#AccountFrm_agree")
-        self.submit_btn = page.locator("button[title='Continue']")
+        self.submit_btn     = page.locator("button[title='Continue']")
 
     def open(self):
         self.page.goto(self.URL)
@@ -39,9 +39,7 @@ class RegistrationPage(BasePage):
 
         self.country.select_option(label="United States")
 
-        self.page.wait_for_function(
-            "document.querySelectorAll('#AccountFrm_zone_id option').length > 1"
-        )
+        self.page.wait_for_timeout(2000)
 
         self.zone.select_option(label="California")
 

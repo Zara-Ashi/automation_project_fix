@@ -1,6 +1,6 @@
 from pages.base_page import BasePage
 from utils.config import BASE_URL
-
+from playwright.sync_api import expect
 
 class LoginPage(BasePage):
     URL = f"{BASE_URL}/index.php?rt=account/login"
@@ -9,6 +9,7 @@ class LoginPage(BasePage):
         super().__init__(page)
         self.username_input = page.locator("#loginFrm_loginname")
         self.password_input = page.locator("#loginFrm_password")
+        self.login_btn = page.get_by_role("button", name="Login")
         self.error_alert = page.locator(".alert-danger")
 
     def open(self):
@@ -29,4 +30,6 @@ class LoginPage(BasePage):
         self.fill_username(username)
         self.fill_password(password)
         self.click_login()
-        self.page.wait_for_timeout(2000)
+        expect(self.page).to_have_url(
+            lambda url: "account" in url, timeout=10000
+        )
