@@ -1,5 +1,6 @@
 import re
 from playwright.sync_api import Page, expect
+from utils.config import URLS
 
 
 class mobilepage:
@@ -24,8 +25,7 @@ class mobilepage:
         expect(self.sidebar).to_be_visible()
 
     def go_to_makeup(self):
-        self.page.goto("https://automationteststore.com/index.php?rt=product/product&product_id=50")
-
+        self.page.goto(URLS["product_50"])
     def category_page_is_opened(self, url_part):
         expect(self.page).to_have_url(re.compile(url_part))
 
