@@ -8,3 +8,7 @@ URLS = {
     "cart": f"{BASE_URL}/index.php?rt=checkout/cart",
     "registration": f"{BASE_URL}/index.php?rt=account/create",
 }
+
+GUEST_DATA = ("Zara", "Ashi", "ashi@test.com", "Amirshoev 12",
+              "Dushanbe", "Tajikistan", "735700")
+DEFAULT_PASSWORD = "Test1234!"
