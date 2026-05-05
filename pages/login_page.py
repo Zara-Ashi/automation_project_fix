@@ -1,9 +1,11 @@
+import re
 from pages.base_page import BasePage
-from utils.config import BASE_URL
+from utils.config import URLS
+from playwright.sync_api import expect
 
 
 class LoginPage(BasePage):
-    URL = f"{BASE_URL}/index.php?rt=account/login"
+    URL = URLS["login"].replace("www.", "")
 
     def __init__(self, page):
         super().__init__(page)
@@ -13,7 +15,7 @@ class LoginPage(BasePage):
 
     def open(self):
         self.page.goto(self.URL)
-        self.page.wait_for_selector("#loginFrm_loginname")
+        expect(self.username_input).to_be_visible()
 
     def fill_username(self, username):
         self.username_input.fill(username)
@@ -22,11 +24,10 @@ class LoginPage(BasePage):
         self.password_input.fill(password)
 
     def click_login(self):
-        with self.page.expect_navigation(wait_until="networkidle"):
-            self.page.get_by_role("button", name="Login").click()
+        self.page.locator("button[title='Login']").click()
+        self.page.wait_for_load_state("domcontentloaded")
 
     def login(self, username, password):
         self.fill_username(username)
         self.fill_password(password)
         self.click_login()
-        self.page.wait_for_timeout(2000)
