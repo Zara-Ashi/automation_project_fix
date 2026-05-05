@@ -11,6 +11,7 @@ class MobilePage:
         self.sidebar = page.locator("#categorymenu")
         self.cart_badge = page.locator(".nav.topcart span.label-orange")
         self.products = page.locator(".productcol, .thumbnail")
+        self.continue_link = page.get_by_role("link", name="Continue")
 
     def open(self):
         self.page.goto(URLS["main"])
@@ -55,7 +56,7 @@ class MobilePage:
         pass
 
     def click_continue_after_order(self):
-        self.page.get_by_role("link", name="Continue").click()
+        self.continue_link.click()
         expect(self.page).to_have_url(re.compile(r"automationteststore\.com"))
 
     def verify_no_horizontal_scroll(self):

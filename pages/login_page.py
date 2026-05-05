@@ -12,6 +12,7 @@ class LoginPage(BasePage):
         self.username_input = page.locator("#loginFrm_loginname")
         self.password_input = page.locator("#loginFrm_password")
         self.error_alert = page.locator(".alert-danger")
+        self.login_btn = page.locator("button[title='Login']")
 
     def open(self):
         self.page.goto(self.URL)
@@ -24,8 +25,8 @@ class LoginPage(BasePage):
         self.password_input.fill(password)
 
     def click_login(self):
-        self.page.locator("button[title='Login']").click()
-        self.page.wait_for_load_state("domcontentloaded")
+        self.login_btn.click()
+        expect(self.page).to_have_url(re.compile("account"), timeout=10000)
 
     def login(self, username, password):
         self.fill_username(username)
