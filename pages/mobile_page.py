@@ -42,11 +42,10 @@ class MobilePage:
 
     def proceed_to_checkout(self):
         self.page.goto(URLS["checkout_shipping"])
-        self.page.wait_for_load_state("domcontentloaded")
-        print("URL после shipping:", self.page.url)
+        expect(self.page).to_have_url(re.compile("checkout/confirm"), timeout=10000)
 
     def confirm_order(self):
-        self.page.locator("button.btn-orange, button[name='confirm']").first.click()
+        self.page.get_by_role("button", name="Confirm Order").click()
         expect(self.page).to_have_url(re.compile("checkout/success"))
 
     def verify_success_page(self):
