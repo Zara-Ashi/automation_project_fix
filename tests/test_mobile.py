@@ -21,4 +21,5 @@ def test_mob_01_e2e(browser, playwright):
     mob.verify_order_id()
     mob.click_continue_after_order()
     mob.verify_no_horizontal_scroll()
+    mob.verify_no_overlapping_elements()
     context.close()

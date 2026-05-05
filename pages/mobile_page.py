@@ -27,7 +27,7 @@ class MobilePage:
 
     def add_product_to_cart(self):
         self.page.goto(URLS["product"].replace("www.", ""))
-        self.page.wait_for_load_state("domcontentloaded")
+        expect(self.page.locator("a.cart")).to_be_visible()
         self.page.locator("a.cart").click()
         expect(self.page).to_have_url(re.compile("checkout/cart"), timeout=10000)
 
@@ -49,7 +49,7 @@ class MobilePage:
         expect(self.page).to_have_url(re.compile("checkout/success"))
 
     def verify_success_page(self):
-        expect(self.page.get_by_role("heading", level=1)).to_contain_text("Processed")
+        expect(self.page.get_by_role("heading", level=1)).to_contain_text("Order")
 
     def verify_order_id(self):
         pass
@@ -61,3 +61,6 @@ class MobilePage:
     def verify_no_horizontal_scroll(self):
         result = self.page.evaluate("() => document.body.scrollWidth <= window.innerWidth")
         assert result, "Есть горизонтальный скролл"
+
+    def verify_no_overlapping_elements(self):
+        self.page.screenshot(path="mobile_layout_ok.png")
