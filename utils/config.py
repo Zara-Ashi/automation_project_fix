@@ -12,6 +12,7 @@ URLS = {
     "cart": f"{BASE_URL}/index.php?rt=checkout/cart",
     "registration": f"{BASE_URL}/index.php?rt=account/create",
     "category_36": CATEGORY_URL.format(36),
+    "login_no_www": f"https://automationteststore.com/index.php?rt=account/login",
 }
 
 GUEST_DATA = ("Zara", "Ashi", "ashi@test.com", "Amirshoev 12",
@@ -22,5 +23,6 @@ PRODUCT_NAME = "Tropiques Minerale Loose Bronzer"
 PRODUCT_NAME_SHORT = "Fiorella"
 CATEGORY_URL_PART = "rt=product/category"
 VIEWPORT_MOBILE = {"width": 390, "height": 844}
+LOGIN_PATH = "/index.php?rt=account/login"
 LOGIN = "zaza_jura"
 PASSWORD = "Zara9559!"
