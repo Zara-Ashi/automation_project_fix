@@ -1,8 +1,6 @@
 from pages.base_page import BasePage
-from utils.config import URLS
+from utils.config import URLS, DEFAULT_PASSWORD
 from playwright.sync_api import expect
-
-DEFAULT_PASSWORD = "Test1234!"
 
 
 class RegistrationPage(BasePage):
@@ -36,13 +34,7 @@ class RegistrationPage(BasePage):
         self.telephone.fill("1234567890")
         self.address.fill("Test Address")
         self.city.fill("Test City")
-
-        self.country.select_option(label="United States")
-
-        self.page.wait_for_timeout(2000)
-
-        self.zone.select_option(label="California")
-
+       self.country.select_option(label="United Kingdom")
         self.postcode.fill("12345")
         self.loginname.fill(login)
         self.password.fill(password)
@@ -51,15 +43,9 @@ class RegistrationPage(BasePage):
 
     def submit(self):
         self.submit_btn.click()
-        expect(self.page).to_have_url(lambda url: "success" in url or "account" in url)
+        expect(self.page).to_have_url(re.compile(r"success|account"))
 
     def register(self, email, login, password=DEFAULT_PASSWORD):
         self.open()
         self.fill_form(email, login, password)
         self.submit()
-
-    def is_registered_successfully(self):
-        return (
-            "your account has been created" in self.page.content().lower()
-            or "account/success" in self.page.url
-        )

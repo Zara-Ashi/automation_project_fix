@@ -2,6 +2,8 @@ from pages.cart_page import CartPage
 from pages.checkout_page import CheckoutPage
 from pages.product_page import ProductPage
 from utils.config import URLS
+from utils.config import URLS, GUEST_DATA
+
 
 def test_TC_CHECKOUT_001(page):
     page.goto(URLS["product"])
@@ -12,7 +14,7 @@ def test_TC_CHECKOUT_001(page):
     cart_page.proceed_to_checkout()
     checkout_page = CheckoutPage(page)
     checkout_page.select_guest_checkout()
-    checkout_page.fill_guest_form("Zara","Ashi","ashi@test.com","Amirshoev 12","Dushanbe","Tajikistan","735700")
+    checkout_page.fill_guest_form(*GUEST_DATA)
     checkout_page.confirm_order()
     checkout_page.verify_checkout_confirmation()
 
@@ -45,7 +47,7 @@ def test_TC_CHECKOUT_004(page):
     cart_page.proceed_to_checkout()
     checkout_page = CheckoutPage(page)
     checkout_page.select_guest_checkout()
-    checkout_page.fill_guest_form("Zara","Ashi","ashi@test.com","Amirshoev 12","Dushanbe","Tajikistan","735700")
+    checkout_page.fill_guest_form(*GUEST_DATA)
     checkout_page.confirm_order()
     checkout_page.verify_email_error()
 
@@ -77,7 +79,7 @@ def test_TC_CHECKOUT_007(page):
     cart_page.proceed_to_checkout()
     checkout_page = CheckoutPage(page)
     checkout_page.select_guest_checkout()
-    checkout_page.fill_guest_form("Zara","Ashi","ashi@test.com","Amirshoev 12","Dushanbe","Tajikistan","735700")
+    checkout_page.fill_guest_form(*GUEST_DATA)
     checkout_page.confirm_order()
     checkout_page.verify_success_url()
     checkout_page.verify_order_number()
@@ -90,7 +92,7 @@ def test_TC_CHECKOUT_008(page):
     cart_page.proceed_to_checkout()
     checkout_page = CheckoutPage(page)
     checkout_page.select_guest_checkout()
-    checkout_page.fill_guest_form("Zara","Ashi","ashi@test.com","Amirshoev 12","Dushanbe","Tajikistan","735700")
+    checkout_page.fill_guest_form(*GUEST_DATA)
     total = checkout_page.get_total()
     expected = checkout_page.get_subtotal() + checkout_page.get_tax() + checkout_page.get_shipping()
     assert abs(total - expected) < 0.01
@@ -116,7 +118,7 @@ def test_TC_CHECKOUT_010(page):
     cart_page.proceed_to_checkout()
     checkout_page = CheckoutPage(page)
     checkout_page.select_guest_checkout()
-    checkout_page.fill_guest_form("Zara","Ashi","ashi@test.com","Amirshoev 12","Dushanbe","Tajikistan","735700")
+    checkout_page.fill_guest_form(*GUEST_DATA)
     checkout_page.confirm_order()
     checkout_page.verify_order_number()
     assert checkout_page.get_total() > 0
