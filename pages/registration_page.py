@@ -1,3 +1,4 @@
+import re
 from pages.base_page import BasePage
 from utils.config import URLS, DEFAULT_PASSWORD
 from playwright.sync_api import expect
@@ -8,20 +9,19 @@ class RegistrationPage(BasePage):
 
     def __init__(self, page):
         super().__init__(page)
-        self.firstname      = page.locator("#AccountFrm_firstname")
-        self.lastname       = page.locator("#AccountFrm_lastname")
-        self.email          = page.locator("#AccountFrm_email")
-        self.telephone      = page.locator("#AccountFrm_telephone")
-        self.address        = page.locator("#AccountFrm_address_1")
-        self.city           = page.locator("#AccountFrm_city")
-        self.country        = page.locator("#AccountFrm_country_id")
-        self.zone           = page.locator("#AccountFrm_zone_id")
-        self.postcode       = page.locator("#AccountFrm_postcode")
-        self.loginname      = page.locator("#AccountFrm_loginname")
-        self.password       = page.locator("#AccountFrm_password")
-        self.confirm        = page.locator("#AccountFrm_confirm")
+        self.firstname = page.locator("#AccountFrm_firstname")
+        self.lastname = page.locator("#AccountFrm_lastname")
+        self.email = page.locator("#AccountFrm_email")
+        self.telephone = page.locator("#AccountFrm_telephone")
+        self.address = page.locator("#AccountFrm_address_1")
+        self.city = page.locator("#AccountFrm_city")
+        self.country = page.locator("#AccountFrm_country_id")
+        self.postcode = page.locator("#AccountFrm_postcode")
+        self.loginname = page.locator("#AccountFrm_loginname")
+        self.password = page.locator("#AccountFrm_password")
+        self.confirm = page.locator("#AccountFrm_confirm")
         self.agree_checkbox = page.locator("#AccountFrm_agree")
-        self.submit_btn     = page.locator("button[title='Continue']")
+        self.submit_btn = page.locator("button[title='Continue']")
 
     def open(self):
         self.page.goto(self.URL)
@@ -34,7 +34,7 @@ class RegistrationPage(BasePage):
         self.telephone.fill("1234567890")
         self.address.fill("Test Address")
         self.city.fill("Test City")
-       self.country.select_option(label="United Kingdom")
+        self.country.select_option(label="United Kingdom")
         self.postcode.fill("12345")
         self.loginname.fill(login)
         self.password.fill(password)
