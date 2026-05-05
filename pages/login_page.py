@@ -5,7 +5,7 @@ from playwright.sync_api import expect
 
 
 class LoginPage(BasePage):
-    URL = URLS["login"].replace("www.", "")
+    URL = URLS["login_no_www"]
 
     def __init__(self, page):
         super().__init__(page)

@@ -12,7 +12,7 @@ URLS = {
     "cart": f"{BASE_URL}/index.php?rt=checkout/cart",
     "registration": f"{BASE_URL}/index.php?rt=account/create",
     "category_36": CATEGORY_URL.format(36),
-    "login_no_www": f"https://automationteststore.com/index.php?rt=account/login",
+    "login_no_www": "https://automationteststore.com/index.php?rt=account/login",
 }
 
 GUEST_DATA = ("Zara", "Ashi", "ashi@test.com", "Amirshoev 12",
