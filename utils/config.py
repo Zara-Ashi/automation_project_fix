@@ -23,6 +23,5 @@ PRODUCT_NAME = "Tropiques Minerale Loose Bronzer"
 PRODUCT_NAME_SHORT = "Fiorella"
 CATEGORY_URL_PART = "rt=product/category"
 VIEWPORT_MOBILE = {"width": 390, "height": 844}
-LOGIN_PATH = "/index.php?rt=account/login"
 LOGIN = "zaza_jura"
 PASSWORD = "Zara9559!"
