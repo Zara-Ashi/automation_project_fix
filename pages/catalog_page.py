@@ -1,6 +1,7 @@
 from pages.base_page import BasePage
-from utils.config import BASE_URL
+from utils.config import URLS, CATEGORY_URL
 from playwright.sync_api import expect
+
 
 class CatalogPage(BasePage):
     def __init__(self, page):
@@ -18,10 +19,12 @@ class CatalogPage(BasePage):
         self.product_cart_with_id = page.locator("a.productcart[data-id]")
 
     def open_category(self, category_id):
-        self.page.goto(f"https://automationteststore.com/index.php?rt=product/category&path={category_id}")
+        self.page.goto(CATEGORY_URL.format(category_id))
+        expect(self.products.first).to_be_visible(timeout=10000)
 
     def open_category_sorted(self, path, sort):
-        self.page.goto(f"{BASE_URL}/index.php?rt=product/category&path={path}&sort={sort}")
+        self.page.goto(f"{CATEGORY_URL.format(path)}&sort={sort}")
+        expect(self.products.first).to_be_visible(timeout=10000)
 
     def get_product_count(self):
         return self.products.count()
@@ -34,7 +37,7 @@ class CatalogPage(BasePage):
 
     def click_first_product(self):
         self.product_name.first.click()
-        self.page.wait_for_load_state("networkidle")
+        expect(self.product_name.first).to_be_visible(timeout=10000)
 
     def get_breadcrumb_text(self):
         return self.breadcrumb.inner_text()
@@ -44,7 +47,7 @@ class CatalogPage(BasePage):
 
     def add_first_product_to_cart(self):
         count = self.add_to_cart_buttons.count()
-        assert count > 0, "Нет кнопок Add to Cart"
+        assert count > 0, "Нет кнопок 'Add to Cart'"
 
         for i in range(count):
             btn = self.add_to_cart_buttons.nth(i)
@@ -78,14 +81,11 @@ class CatalogPage(BasePage):
         raise Exception("Не удалось добавить ни один товар")
 
     def add_product_to_cart(self, index):
-        self.page.goto(f"{BASE_URL}/index.php?rt=product/category&path=36")
-        self.page.wait_for_timeout(1000)
-
+        self.page.goto(URLS["category_36"])
         product_id = self.product_cart_with_id.nth(index).get_attribute("data-id")
-
         if product_id:
             self.page.evaluate(f"update_cart({product_id})")
-            self.page.wait_for_timeout(2000)
+            expect(self.cart_badge).to_be_visible(timeout=5000)
         else:
             self.product_cart_button.nth(index).click()
-            self.page.wait_for_timeout(2000)
+            expect(self.cart_badge).to_be_visible(timeout=5000)

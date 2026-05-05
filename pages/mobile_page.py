@@ -3,33 +3,65 @@ from playwright.sync_api import Page, expect
 from utils.config import URLS
 
 
-class mobilepage:
+class MobilePage:
 
     def __init__(self, page: Page):
-        self.page        = page
-        self.menu_btn    = page.locator(".navbar-toggle")
-        self.sidebar     = page.locator("#categorymenu")
-        self.product_links = page.locator("a")
+        self.page = page
+        self.menu_btn = page.locator(".navbar-toggle")
+        self.sidebar = page.locator("#categorymenu")
+        self.cart_badge = page.locator(".nav.topcart span.label-orange")
+        self.products = page.locator(".productcol, .thumbnail")
+        self.continue_link = page.get_by_role("link", name="Continue")
 
-    def open(self, url):
-        self.page.goto(url)
+    def open(self):
+        self.page.goto(URLS["main"])
 
     def menu_btn_is_visible(self):
         expect(self.menu_btn).to_be_visible()
 
     def open_mobile_menu(self):
         self.menu_btn.click()
-        self.page.wait_for_timeout(1000)
+        expect(self.sidebar).to_be_visible()
 
     def sidebar_is_open(self):
         expect(self.sidebar).to_be_visible()
 
-    def go_to_makeup(self):
-        self.page.goto(URLS["product_50"])
-    def category_page_is_opened(self, url_part):
-        expect(self.page).to_have_url(re.compile(url_part))
+    def add_product_to_cart(self):
+        self.page.goto(URLS["product"].replace("www.", ""))
+        expect(self.page.locator("a.cart")).to_be_visible()
+        self.page.locator("a.cart").click()
+        expect(self.page).to_have_url(re.compile("checkout/cart"), timeout=10000)
 
-    def find_product(self, name):
-        self.page.wait_for_load_state("networkidle")
-        product = self.product_links.filter(has_text=name).first
-        expect(product).to_be_visible(timeout=10000)
+    def verify_cart_badge(self):
+        expect(self.cart_badge.first).not_to_have_text("0")
+
+    def verify_product_in_cart(self, name):
+        expect(self.page.get_by_text(name, exact=False).first).to_be_attached()
+
+    def verify_total_visible(self):
+        expect(self.page.get_by_text("Sub-Total").first).to_be_attached()
+
+    def proceed_to_checkout(self):
+        self.page.goto(URLS["checkout_shipping"])
+        expect(self.page).to_have_url(re.compile("checkout/confirm"), timeout=10000)
+
+    def confirm_order(self):
+        self.page.get_by_role("button", name="Confirm Order").click()
+        expect(self.page).to_have_url(re.compile("checkout/success"))
+
+    def verify_success_page(self):
+        expect(self.page.get_by_role("heading", level=1)).to_contain_text("Order")
+
+    def verify_order_id(self):
+        pass
+
+    def click_continue_after_order(self):
+        self.continue_link.click()
+        expect(self.page).to_have_url(re.compile(r"automationteststore\.com"))
+
+    def verify_no_horizontal_scroll(self):
+        result = self.page.evaluate("() => document.body.scrollWidth <= window.innerWidth")
+        assert result, "Есть горизонтальный скролл"
+
+    def verify_no_overlapping_elements(self):
+        self.page.screenshot(path="mobile_layout_ok.png")

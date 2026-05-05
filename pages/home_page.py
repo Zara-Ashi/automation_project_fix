@@ -1,5 +1,6 @@
 from pages.base_page import BasePage
-from utils.config import BASE_URL
+from utils.config import BASE_URL, URLS
+from playwright.sync_api import expect
 
 
 class HomePage(BasePage):
@@ -18,8 +19,12 @@ class HomePage(BasePage):
     def search(self, keyword):
         self.search_input.fill(keyword)
         self.search_button.click()
-        self.page.wait_for_load_state("networkidle")
+        expect(self.search_input).to_be_visible(timeout=10000)
 
-    def open(self, wait_time=1000):
+    def open(self):
+        self.page.goto(self.URL)
+        expect(self.category_menu).to_be_visible()
+
+    def open_with_timeout(self, wait_time=1000):
         self.page.goto(self.URL)
         self.page.wait_for_timeout(wait_time)
