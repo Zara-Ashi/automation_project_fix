@@ -23,7 +23,11 @@ class CartPage(BasePage):
 
     def open(self):
         self.page.goto(self.URL)
-        self.page.wait_for_timeout(1000)
+        expect(self.product_rows.first.or_(self.empty_cart_msg)).to_be_visible()
+
+    def open_with_timeout(self, wait_time=1000):
+        self.page.goto(self.URL)
+        self.page.wait_for_timeout(wait_time)
 
     def should_have_product(self):
         expect(self.product_rows.first).to_be_visible()
@@ -41,7 +45,7 @@ class CartPage(BasePage):
         self.checkout_link.first.click()
 
     def get_badge_count(self):
-        self.page.wait_for_timeout(2000)
+        expect(self.badge.first).to_be_visible()
         return int(self.badge.first.inner_text().strip())
 
     def is_empty(self):
@@ -52,7 +56,7 @@ class CartPage(BasePage):
 
     def remove_first_product(self):
         self.remove_btn.first.click()
-        self.page.wait_for_timeout(1000)
+        expect(self.remove_btn.first).not_to_be_visible()
 
     def get_first_product_price(self):
         text = self.product_price_col.first.inner_text()
@@ -68,8 +72,8 @@ class CartPage(BasePage):
     def update_qty(self, qty):
         self.qty_input.first.fill(str(qty))
         self.update_btn.first.click()
-        self.page.wait_for_timeout(1000)
+        expect(self.qty_input.first).to_have_value(str(qty))
 
     def click_continue(self):
         self.continue_btn.click()
-        self.page.wait_for_timeout(1000)
+        expect(self.page).to_have_url(URLS["main"])
